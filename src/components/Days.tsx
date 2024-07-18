@@ -5,6 +5,7 @@ interface Props {
 }
 
 function CalendarDays(props: Props) {
+  console.log(props, 'hello');
   let firstDayOfMonth = new Date(
     props.day.getFullYear(),
     props.day.getMonth(),
@@ -37,7 +38,7 @@ function CalendarDays(props: Props) {
   }
 
   return (
-    <div className="w-full flex-1 flex justify-center box-border flex-wrap">
+    <div className="w-full flex-grow flex flex-wrap justify-center box-border">
       {currentDays.map((day) => {
         const inCurrentMonth = day.month === props.day.getMonth();
         return (

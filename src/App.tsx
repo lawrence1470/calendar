@@ -33,7 +33,9 @@ function App() {
           />
           <b>2024</b>
         </Flex>
-        <Calendar selectedMonth={selectedMonth} />
+        <div className='w-[900px] h-[600px] flex flex-col mt-8 mx-auto"'>
+          <Calendar selectedMonth={selectedMonth} />
+        </div>
       </Container>
     </QueryClientProvider>
   );
