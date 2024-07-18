@@ -1,14 +1,15 @@
 import cx from 'classnames';
 
 interface Props {
-  day: Date;
+  firstDay: Date;
+  italy: any[];
+  usa: any[];
 }
 
-function CalendarDays(props: Props) {
-  console.log(props, 'hello');
+function CalendarDays({ firstDay, italy, usa }: Props) {
   let firstDayOfMonth = new Date(
-    props.day.getFullYear(),
-    props.day.getMonth(),
+    firstDay.getFullYear(),
+    firstDay.getMonth(),
     1,
   );
   let weekdayOfFirstDay = firstDayOfMonth.getDay();
@@ -26,12 +27,20 @@ function CalendarDays(props: Props) {
     }
 
     let calendarDay = {
-      currentMonth: firstDayOfMonth.getMonth() === props.day.getMonth(),
+      currentMonth: firstDayOfMonth.getMonth() === firstDay.getMonth(),
       date: new Date(firstDayOfMonth),
       month: firstDayOfMonth.getMonth(),
       number: firstDayOfMonth.getDate(),
-      selected: firstDayOfMonth.toDateString() === props.day.toDateString(),
+      selected: firstDayOfMonth.toDateString() === firstDay.toDateString(),
       year: firstDayOfMonth.getFullYear(),
+      ItalyHoliday: italy.find(
+        (holiday) =>
+          holiday.date === firstDayOfMonth.toISOString().split('T')[0],
+      ),
+      USAHoliday: usa.find(
+        (holiday) =>
+          holiday.date === firstDayOfMonth.toISOString().split('T')[0],
+      ),
     };
 
     currentDays.push(calendarDay);
@@ -40,7 +49,7 @@ function CalendarDays(props: Props) {
   return (
     <div className="w-full flex-grow flex flex-wrap justify-center box-border">
       {currentDays.map((day) => {
-        const inCurrentMonth = day.month === props.day.getMonth();
+        const inCurrentMonth = day.month === firstDay.getMonth();
         return (
           <div
             className={cx('w-32 h-20 relative border border-gray-400', {
@@ -48,6 +57,10 @@ function CalendarDays(props: Props) {
             })}
           >
             <p>{day.number}</p>
+            <div>
+              {day.ItalyHoliday && <p>{day.ItalyHoliday.name}</p>}
+              {day.USAHoliday && <p>{day.USAHoliday.name}</p>}
+            </div>
           </div>
         );
       })}

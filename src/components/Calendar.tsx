@@ -18,12 +18,12 @@ const Calendar = ({ selectedMonth }: Props): JSX.Element => {
   };
 
   function getHolidaysItaly() {
-    return fetch('https://date.nager.at/api/v3/publicholidays/2024/39')
+    return fetch('https://date.nager.at/api/v3/publicholidays/2024/IT')
       .then((res) => res.json())
       .then((data) => data);
   }
   function getHolidaysAmerica() {
-    return fetch('https://date.nager.at/api/v3/publicholidays/2024/1')
+    return fetch('https://date.nager.at/api/v3/publicholidays/2024/US')
       .then((res) => res.json())
       .then((data) => data);
   }
@@ -42,6 +42,10 @@ const Calendar = ({ selectedMonth }: Props): JSX.Element => {
     setFirstDate(firstDate);
   }, [selectedMonth]);
 
+  if (queryAmerica.isLoading || queryItaly.isLoading) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <div className="w-full flex-grow flex flex-col">
       <div className="w-full flex items-center justify-around h-10 color-white">
@@ -53,7 +57,15 @@ const Calendar = ({ selectedMonth }: Props): JSX.Element => {
           );
         })}
       </div>
-      <div>{firstDate && <Days day={firstDate} />}</div>
+      <div>
+        {firstDate && (
+          <Days
+            firstDay={firstDate}
+            italy={queryItaly.data}
+            usa={queryAmerica.data}
+          />
+        )}
+      </div>
     </div>
   );
 };
