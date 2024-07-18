@@ -1,8 +1,10 @@
+import './global.css';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { MonthDropdown, Calendar } from './components';
 import { MONTH_ARRAY } from './constants';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import { Calendar as CustomCalendar } from './components/ui/calendar';
 
 const Container = styled.div`
   margin: 32px;
@@ -22,6 +24,9 @@ const CURRENT_MONTH = MONTH_ARRAY[CURRENT_MONTH_IDX];
 
 function App() {
   const [selectedMonth, setSelectedMonth] = useState<string>(CURRENT_MONTH);
+  const [customHolidays, setCustomHolidays] = useState<
+    { name: string; date: Date }[]
+  >([]);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -31,9 +36,15 @@ function App() {
             selectedMonth={selectedMonth}
             setSelectedMonth={setSelectedMonth}
           />
-          <b>2024</b>
+          <b>Year: 2024</b>
         </Flex>
-        <div className='w-[900px] h-[600px] flex flex-col mt-8 mx-auto"'>
+        <div className="w-[900px] h-[600px] flex flex-col mt-8 mx-auto justify-center">
+          <h1>
+            Current Month: <strong>{selectedMonth}</strong>
+          </h1>
+          <div className="flex justify-center text-lg font-bold">
+            <h2 className="underline">Holidays for USA 🇺🇸 and Italy 🇮🇹 </h2>
+          </div>
           <Calendar selectedMonth={selectedMonth} />
         </div>
       </Container>

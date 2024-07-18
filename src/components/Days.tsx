@@ -6,25 +6,47 @@ interface Props {
   usa: any[];
 }
 
-function CalendarDays({ firstDay, italy, usa }: Props) {
-  let firstDayOfMonth = new Date(
-    firstDay.getFullYear(),
-    firstDay.getMonth(),
-    1,
+function getFirstDayOfMonth(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), 1);
+}
+
+function getWeekdayOfFirstDay(date: Date): number {
+  return date.getDay();
+}
+
+function adjustDateForFirstDay(
+  date: Date,
+  day: number,
+  weekdayOfFirstDay: number,
+): Date {
+  if (day === 0 && weekdayOfFirstDay === 0) {
+    date.setDate(date.getDate() - 7);
+  } else if (day === 0) {
+    date.setDate(date.getDate() + (day - weekdayOfFirstDay));
+  } else {
+    date.setDate(date.getDate() + 1);
+  }
+  return date;
+}
+
+function isHoliday(date: Date, holidays: any[]): any {
+  const holiday = holidays.find(
+    (holiday) => holiday.date === date.toISOString().split('T')[0],
   );
-  let weekdayOfFirstDay = firstDayOfMonth.getDay();
+  return holiday;
+}
+
+function CalendarDays({ firstDay, italy, usa }: Props) {
+  let firstDayOfMonth = getFirstDayOfMonth(firstDay);
+  let weekdayOfFirstDay = getWeekdayOfFirstDay(firstDayOfMonth);
   let currentDays = [];
 
   for (let day = 0; day < 42; day++) {
-    if (day === 0 && weekdayOfFirstDay === 0) {
-      firstDayOfMonth.setDate(firstDayOfMonth.getDate() - 7);
-    } else if (day === 0) {
-      firstDayOfMonth.setDate(
-        firstDayOfMonth.getDate() + (day - weekdayOfFirstDay),
-      );
-    } else {
-      firstDayOfMonth.setDate(firstDayOfMonth.getDate() + 1);
-    }
+    firstDayOfMonth = adjustDateForFirstDay(
+      firstDayOfMonth,
+      day,
+      weekdayOfFirstDay,
+    );
 
     let calendarDay = {
       currentMonth: firstDayOfMonth.getMonth() === firstDay.getMonth(),
@@ -33,14 +55,8 @@ function CalendarDays({ firstDay, italy, usa }: Props) {
       number: firstDayOfMonth.getDate(),
       selected: firstDayOfMonth.toDateString() === firstDay.toDateString(),
       year: firstDayOfMonth.getFullYear(),
-      ItalyHoliday: italy.find(
-        (holiday) =>
-          holiday.date === firstDayOfMonth.toISOString().split('T')[0],
-      ),
-      USAHoliday: usa.find(
-        (holiday) =>
-          holiday.date === firstDayOfMonth.toISOString().split('T')[0],
-      ),
+      ItalyHoliday: isHoliday(firstDayOfMonth, italy),
+      USAHoliday: isHoliday(firstDayOfMonth, usa),
     };
 
     currentDays.push(calendarDay);
@@ -58,8 +74,16 @@ function CalendarDays({ firstDay, italy, usa }: Props) {
           >
             <p>{day.number}</p>
             <div>
-              {day.ItalyHoliday && <p>{day.ItalyHoliday.name}</p>}
-              {day.USAHoliday && <p>{day.USAHoliday.name}</p>}
+              {day.ItalyHoliday && (
+                <p className="rounded-2xl bg-red-500 p-1 text-white text-xs text-center mx-1">
+                  {day.ItalyHoliday.name}
+                </p>
+              )}
+              {day.USAHoliday && (
+                <p className="rounded-2xl bg-blue-600 p-1 text-white text-xs text-center mx-1">
+                  {day.USAHoliday.name}
+                </p>
+              )}
             </div>
           </div>
         );
