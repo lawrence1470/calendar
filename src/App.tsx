@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { MonthDropdown, Calendar } from './components';
 import { MONTH_ARRAY } from './constants';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
-import { Calendar as CustomCalendar } from './components/ui/calendar';
 
 const Container = styled.div`
   margin: 32px;
